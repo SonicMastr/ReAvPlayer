@@ -1,5 +1,3 @@
-
-
 #include <kernel.h>
 #include <videodec.h>
 #include <scetypes.h>
@@ -55,7 +53,7 @@ static SceInt32 _sceAvcdecDecode_patch(SceAvcdecCtrl *a, const SceAvcdecAu *b, S
 	SceAvcdecArrayPicture wap;
 	printf("Ran sceAvcdecDecode_patch\n");
 	printf("SceAvcdecCtrl frameBuf.size %d\n", a->frameBuf.size);
-    int ret = sceAvcdecDecodeAuInternal(a,b,&pictureInt);
+	int ret = sceAvcdecDecodeAuInternal(a,b,&pictureInt);
 	printf("sceAvcdecDecodeAuInternal() 0x%08x\n", ret);
 	ret = sceAvcdecDecodeGetPictureWithWorkPictureInternal(a, c, &wap, &pictureInt);
 	printf("sceAvcdecDecodeGetPictureWithWorkPictureInternal() 0x%08x\npicture array: numOfOutput %d\n numOfElm %d\n", ret, c->numOfOutput, c->numOfElm);
@@ -64,7 +62,7 @@ static SceInt32 _sceAvcdecDecode_patch(SceAvcdecCtrl *a, const SceAvcdecAu *b, S
 
 int module_start(SceSize argc, void *args)
 {
-    int ret = sceSysmoduleLoadModule(SCE_SYSMODULE_AVPLAYER);
+	int ret = sceSysmoduleLoadModule(SCE_SYSMODULE_AVPLAYER);
 	printf("## Start AV Player Module: %d\n", ret);
 	hook[0] = taiHookFunctionImport(&hook_ref[0], "SceAvcodecUser", 0xA166C96E, 0xAF9BDDA7, _sceVideodecQueryMemSize_patch);
 	hook[1] = taiHookFunctionImport(&hook_ref[1], "SceAvcodecUser", 0xA166C96E, 0x0B47EBC1, _sceAvcdecQueryDecoderMemSize_patch);
@@ -75,7 +73,7 @@ int module_start(SceSize argc, void *args)
 	printf("Hook 1: 0x%08x\n", hook[1]);
 	printf("Hook 2: 0x%08x\n", hook[2]);
 	printf("Hook 3: 0x%08x\n", hook[3]);
-    printf("Hook 4: 0x%08x\n", hook[4]);
+	printf("Hook 4: 0x%08x\n", hook[4]);
 
 	info.size = sizeof(info);
 	taiGetModuleInfo("SceAvPlayer", &info);
@@ -87,11 +85,11 @@ int module_start(SceSize argc, void *args)
 int module_stop()
 {
 	sceSysmoduleUnloadModule(SCE_SYSMODULE_AVPLAYER);
-    printf("## MODULE STOP ##\n\n");
-    int i = 0;
+	printf("## MODULE STOP ##\n\n");
+	int i = 0;
 	while (i < HOOK_NUM){
 		taiHookRelease(hook[i], hook_ref[i]);
 		i++;
 	}
-    return SCE_KERNEL_STOP_SUCCESS;
+	return SCE_KERNEL_STOP_SUCCESS;
 }
